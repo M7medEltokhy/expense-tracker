@@ -144,53 +144,6 @@ ng serve
 Open `http://localhost:4200` in your browser. You should be able to add,
 edit, delete, filter, search, and sort expenses.
 
-### 4. Set up the AI chatbot (n8n)
-1. In n8n, create a workflow: **Webhook** (POST) → **AI Agent** →
-   **Respond to Webhook**, returning `{ "reply": "..." }`
-2. On the Webhook node, enable **Allowed Origins (CORS)** for
-   `http://localhost:4200` (or `*`) — otherwise the browser blocks the
-   request
-3. On the AI Agent node, set:
-   - **Prompt (User Message)**: `{{ $json.body.message }}`
-   - **System Message**:
-     ```
-     You are a helpful assistant embedded in a personal Expense Tracker app.
-     You must answer ONLY using the expense data provided below in this
-     message. Never invent, estimate, or guess a number that isn't directly
-     supported by this data. If the data doesn't let you answer the
-     question, say so clearly and suggest what the user could check instead.
-
-     Today's date is: {{ $json.body.currentDate }}
-     Use this as "today" to resolve any relative time phrases in the
-     user's question (e.g. "last week", "this month", "yesterday", "the
-     past 7 days") into actual date ranges before checking the expense
-     data below. Do not assume today's date from anything else.
-
-     Pre-computed summary (trust these numbers - don't recompute totals
-     yourself):
-     {{ JSON.stringify($json.body.summary) }}
-
-     Full raw expense list (use this for a specific category, date range,
-     or individual expense not covered by the summary):
-     {{ JSON.stringify($json.body.expenses) }}
-
-     Answer in one or two short sentences. Format money amounts with a
-     currency symbol and two decimal places.
-     ```
-4. On the **Respond to Webhook** node, set the response body to
-   `{ "reply": "{{ $json.output }}" }` (check the AI Agent's actual output
-   field name after a test run — it's usually `output`, sometimes `text`)
-5. Copy the webhook URL into `src/environments/environment.ts`:
-   ```typescript
-   export const environment = {
-     production: false,
-     aiAgentWebhookUrl: 'https://your-n8n-instance/webhook/expense-chat',
-   };
-   ```
-6. Test the workflow, then **Activate** it, then ask the chat panel a
-   question like "What's my total spending?" or "What did I spend last
-   week?"
-
 ---
 
 ## Data model
