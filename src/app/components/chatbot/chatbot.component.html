@@ -1,0 +1,56 @@
+<section class="chat-panel">
+  <div class="chat-head">
+    <h2>Ask about your expenses</h2>
+  </div>
+
+  <div class="chat-body">
+    @if (chatService.messages().length === 0) {
+      <div class="chat-empty">
+        <p>Try asking:</p>
+        <ul>
+          <li>"What's my total spending?"</li>
+          <li>"How much did I spend on food?"</li>
+          <li>"Which expense was the largest?"</li>
+        </ul>
+      </div>
+    }
+
+    @for (msg of chatService.messages(); track $index) {
+      <div class="msg" [class.from-user]="msg.role === 'user'" [class.from-ai]="msg.role === 'ai'">
+        <span class="msg-bubble">{{ msg.text }}</span>
+      </div>
+    }
+
+    @if (chatService.loading()) {
+      <div class="msg from-ai">
+        <span class="msg-bubble typing" aria-label="Assistant is typing">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        </span>
+      </div>
+    }
+
+    @if (chatService.error()) {
+      <div class="chat-error">{{ chatService.error() }}</div>
+    }
+  </div>
+
+  <div class="chat-input-row">
+    <label class="sr-only" for="chatInput">Message</label>
+    <input
+      id="chatInput"
+      type="text"
+      placeholder="Ask a question…"
+      [ngModel]="draft()"
+      (ngModelChange)="draft.set($event)"
+      (keydown)="onKeydown($event)"
+    />
+    <button
+      type="button"
+      [disabled]="!draft().trim() || chatService.loading()"
+      (click)="send()"
+      aria-label="Send message"
+    >
+      ↑
+    </button>
+  </div>
+</section>

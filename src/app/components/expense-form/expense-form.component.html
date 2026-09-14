@@ -1,0 +1,68 @@
+<form [formGroup]="form" (ngSubmit)="submit()" class="expense-form">
+  <div class="form-header">
+    <h2>{{ isEditing ? 'Update expense' : 'Add expense' }}</h2>
+    @if (isEditing) {
+      <span class="edit-badge">Editing</span>
+    }
+  </div>
+
+  <div class="field">
+    <label for="amount">Amount</label>
+    <input id="amount" type="number" formControlName="amount" step="0.01" placeholder="0.00" />
+    @if (form.controls.amount.invalid && form.controls.amount.touched) {
+      <div class="error">
+        @if (form.controls.amount.errors?.['required']) {
+          <span>Amount is required.</span>
+        }
+        @if (form.controls.amount.errors?.['min']) {
+          <span>Amount must be greater than 0.</span>
+        }
+      </div>
+    }
+  </div>
+
+  <div class="field">
+    <label for="category">Category</label>
+    <select id="category" formControlName="category">
+      <option [ngValue]="null" disabled>Select a category</option>
+      @for (cat of categories; track cat) {
+        <option [value]="cat">{{ cat }}</option>
+      }
+    </select>
+    @if (form.controls.category.invalid && form.controls.category.touched) {
+      <div class="error">Category is required.</div>
+    }
+  </div>
+
+  <div class="field">
+    <label for="date">Date</label>
+    <input id="date" type="date" formControlName="date" />
+    @if (form.controls.date.invalid && form.controls.date.touched) {
+      <div class="error">
+        @if (form.controls.date.errors?.['required']) {
+          <span>Date is required.</span>
+        }
+        @if (form.controls.date.errors?.['futureDate']) {
+          <span>Date cannot be in the future.</span>
+        }
+      </div>
+    }
+  </div>
+
+  <div class="field">
+    <label for="note">Note (optional)</label>
+    <textarea id="note" formControlName="note" maxlength="200" placeholder="What was this for?"></textarea>
+    @if (form.controls.note.invalid && form.controls.note.touched) {
+      <div class="error">Note must be 200 characters or fewer.</div>
+    }
+  </div>
+
+  <div class="actions">
+    <button type="submit" [disabled]="form.invalid">
+      {{ isEditing ? 'Update expense' : 'Add expense' }}
+    </button>
+    @if (isEditing) {
+      <button type="button" class="cancel" (click)="cancelEdit()">Cancel</button>
+    }
+  </div>
+</form>

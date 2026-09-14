@@ -1,12 +1,21 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ExpenseFormComponent } from './components/expense-form/expense-form.component';
+import { ExpenseListComponent } from './components/expense-list/expense-list.component';
+import { ChatbotComponent } from './components/chatbot/chatbot.component';
+import { ExpenseService } from './services/expense.service';
 
 @Component({
-  imports: [RouterOutlet],
   selector: 'app-root',
-  styleUrl: './app.css',
+  standalone: true,
+  imports: [CommonModule, ExpenseFormComponent, ExpenseListComponent, ChatbotComponent],
   templateUrl: './app.html',
+  styleUrl: './app.css',
 })
-export class App {
-  protected readonly title = signal('expense-tracker');
+export class App implements OnInit {
+  expenseService = inject(ExpenseService);
+
+  ngOnInit(): void {
+    this.expenseService.loadExpenses();
+  }
 }

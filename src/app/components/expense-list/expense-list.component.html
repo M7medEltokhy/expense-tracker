@@ -1,0 +1,106 @@
+<div class="ledger-wrapper">
+  <div class="toolbar">
+    <div class="toolbar-group">
+      <label class="sr-only" for="filterCategory">Filter by category</label>
+      <select id="filterCategory" (change)="onCategoryChange($any($event.target).value)">
+        <option value="All">All categories</option>
+        @for (cat of categories; track cat) {
+          <option [value]="cat">{{ cat }}</option>
+        }
+      </select>
+
+      <label class="sr-only" for="searchNote">Search notes</label>
+      <input
+        id="searchNote"
+        type="text"
+        placeholder="Search notes"
+        (input)="onSearchChange($any($event.target).value)"
+      />
+    </div>
+
+    <div class="toolbar-group">
+      <label class="sr-only" for="sortBy">Sort by</label>
+      <select id="sortBy" (change)="onSortByChange($any($event.target).value)">
+        <option value="date">Date</option>
+        <option value="amount">Amount</option>
+      </select>
+
+      <button
+        type="button"
+        class="dir-toggle"
+        (click)="toggleSortDir()"
+        [attr.aria-label]="
+          sortDir() === 'asc' ? 'Sorted ascending, click to sort descending' : 'Sorted descending, click to sort ascending'
+        "
+      >
+        {{ sortDir() === 'asc' ? '↑' : '↓' }}
+      </button>
+
+      <label class="threshold-field" for="threshold">
+        Flag over
+        <input
+          id="threshold"
+          type="number"
+          min="0"
+          [value]="overBudgetThreshold()"
+          (input)="onThresholdChange($any($event.target).value)"
+        />
+      </label>
+    </div>
+  </div>
+
+  @if (expenseService.error()) {
+    <div class="banner error-banner">{{ expenseService.error() }}</div>
+  }
+
+  @if (expenseService.loading()) {
+    <div class="banner loading-banner">Loading…</div>
+  }
+
+  <div class="ledger-summary">
+    <span class="count">{{ filteredExpenses().length }} expense(s)</span>
+    <span class="filtered-total">{{ total() | currency }}</span>
+  </div>
+
+  @if (categorySubtotals().size > 0) {
+    <div class="subtotals">
+      @for (entry of categorySubtotals() | keyvalue; track entry.key) {
+        <span class="subtotal-chip">{{ entry.key }}: {{ entry.value | currency }}</span>
+      }
+    </div>
+  }
+
+  @if (filteredExpenses().length === 0 && !expenseService.loading()) {
+    <div class="empty-state">No expenses match your filters.</div>
+  }
+
+  @if (filteredExpenses().length > 0) {
+    <div class="ledger-header" aria-hidden="true">
+      <span>Category</span>
+      <span>Note</span>
+      <span>Date</span>
+      <span class="align-right">Amount</span>
+      <span></span>
+    </div>
+  }
+
+  <div class="ledger-rows" role="list">
+    @for (expense of filteredExpenses(); track expense.id) {
+      <div
+        class="row"
+        role="listitem"
+        [appHighlightOverBudget]="expense.amount"
+        [threshold]="overBudgetThreshold()"
+      >
+        <span class="row-category">{{ expense.category | categoryIcon }}</span>
+        <span class="row-note">{{ expense.note || '—' }}</span>
+        <span class="row-date">{{ expense.date }}</span>
+        <span class="row-amount">{{ expense.amount | currency }}</span>
+        <span class="row-actions">
+          <button type="button" class="icon-btn" (click)="edit(expense)" aria-label="Edit expense">✎</button>
+          <button type="button" class="icon-btn danger" (click)="remove(expense)" aria-label="Delete expense">✕</button>
+        </span>
+      </div>
+    }
+  </div>
+</div>
