@@ -7,7 +7,6 @@ an n8n AI Agent workflow) that can answer questions about your spending.
 
 <img width="1919" height="932" alt="Expense Tracker - main view" src="https://github.com/user-attachments/assets/52b0ebd0-81f8-4882-9dc5-5f9e9a4ba4bd" />
 
-<img width="1919" height="886" alt="Expense Tracker - chatbot" src="https://github.com/user-attachments/assets/53d30d49-07fb-478b-9932-8c612d1285d6" />
 
 ---
 
@@ -65,10 +64,8 @@ an n8n AI Agent workflow) that can answer questions about your spending.
   - "Show my Food expenses" / "What did I spend between Aug 1 and Aug 15?"
   - "Help me understand my recent spending"
 
-<img width="1919" height="886" alt="n8n workflow: Webhook to AI Agent to Respond to Webhook" src="PASTE_YOUR_N8N_SCREENSHOT_GITHUB_URL_HERE" />
-<!-- Replace the src above with your n8n workflow screenshot, uploaded the
-     same way you did the two app screenshots above (drag it into a GitHub
-     issue/PR comment or the repo's file editor to get a hosted URL). -->
+<img width="1919" height="886" alt="Expense Tracker - chatbot" src="https://github.com/user-attachments/assets/53d30d49-07fb-478b-9932-8c612d1285d6" />
+
 
 
 ---
